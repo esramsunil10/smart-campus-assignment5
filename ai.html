@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Smart Campus Assistant</title> <!-- Updated title -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #89f7fe, #66a6ff);
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      color: #fff;
+      text-shadow: 2px 2px 5px rgba(0,0,0,0.4);
+    }
+    table {
+      width: 90%;
+      margin: 20px auto;
+      border-collapse: collapse;
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+    th, td {
+      padding: 14px;
+      text-align: center;
+      border: 1px solid #ddd;
+      font-size: 16px;
+    }
+    th {
+      background: #ff6a00;
+      color: #fff;
+    }
+    tr:nth-child(even) { background: #f9f9f9; }
+    td img {
+      width: 22px;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+    /* Search Bar */
+    #search {
+      margin: 20px;
+    }
+    #search input {
+      padding: 10px;
+      width: 250px;
+      border-radius: 6px;
+      border: none;
+      outline: none;
+    }
+    #search button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 6px;
+      background: #ff6a00;
+      color: #fff;
+      cursor: pointer;
+    }
+    /* Stats Section */
+    #stats {
+      margin-top: 50px;
+      padding: 20px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      width: 90%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #charts {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    canvas {
+      max-width: 400px;
+      max-height: 300px;
+    }
+    ul.points {
+      text-align: left;
+      margin: 20px auto;
+      width: fit-content;
+    }
+    ul.points li {
+      margin: 8px 0;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <h1>📅 Smart Campus Assistant</h1> <!-- Updated heading -->
+
+  <!-- Search bar -->
+  <div id="search">
+    <input type="text" id="searchInput" placeholder="Search anything...">
+    <button onclick="searchTable()">Search</button>
+  </div>
+
+  <!-- Weekly Schedule Table -->
+  <table id="scheduleTable">
+    <tr>
+      <th>Day</th>
+      <th>9:00 - 10:00</th>
+      <th>10:00 - 11:00</th>
+      <th>11:00 - 12:00</th>
+      <th>1:00 - 2:00</th>
+      <th>2:00 - 3:00</th>
+    </tr>
+    <tr>
+      <td>Monday</td>
+      <td><img src="https://cdn-icons-png.flaticon.com/512/3135/3135755.png">Math</td>
+      <td><img src="https://cdn-icons-png.flaticon.com/512/2721/2721297.png">Data Science</td>
+      <td><img src="https://cdn-icons-png.flaticon.com/512/4712/4712100.png">AI</td>
+      <td><img src="https://cdn-icons-png.flaticon.com/512/3209/3209265.png">Databases</td>
+      <td><img src="https://cdn-icons-png.flaticon.com/512/1077/1077063.png">Sports</td>
+    </tr>
+    <tr>
+      <td>Tuesday</td>
+      <td>English</td>
+      <td>Math</td>
+      <td><img src="https://cdn-icons-png.flaticon.com/512/1197/1197460.png">Physics</td>
+      <td>Chemistry</td>
+      <td>Library</td>
+    </tr>
+    <tr>
+      <td>Wednesday</td>
+      <td>Biology</td>
+      <td>AI</td>
+      <td>Math</td>
+      <td>Computer Lab</td>
+      <td>Sports</td>
+    </tr>
+    <tr>
+      <td>Thursday</td>
+      <td>English</td>
+      <td>Physics</td>
+      <td>Math</td>
+      <td>Data Science</td>
+      <td>Chemistry</td>
+    </tr>
+    <tr>
+      <td>Friday</td>
+      <td>Biology</td>
+      <td>Chemistry</td>
+      <td>AI</td>
+      <td>Databases</td>
+      <td>Project Work</td>
+    </tr>
+  </table>
+
+  <!-- Campus Statistics Section -->
+  <section id="stats">
+    <h1>📊 Campus Statistics</h1>
+    <div id="charts">
+      <canvas id="attendanceChart"></canvas>
+      <canvas id="foodChart"></canvas>
+    </div>
+
+    <h2>✨ Key Highlights</h2>
+    <ul class="points">
+      <li>📖 Library has <b>2000+ books</b> covering all subjects.</li>
+      <li>🍽️ Canteen serves <b>multi-cuisine meals</b> daily.</li>
+      <li>💻 Weekly <b>coding sessions</b> conducted in Lab-3.</li>
+      <li>🏆 Top 10 students get <b>scholarship rewards</b> every semester.</li>
+      <li>📅 Attendance is tracked digitally and synced with portal.</li>
+    </ul>
+  </section>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Search Function -->
+  <script>
+    function searchTable() {
+      let input = document.getElementById("searchInput").value.toLowerCase();
+      let table = document.getElementById("scheduleTable");
+      let rows = table.getElementsByTagName("tr");
+      
+      for (let i = 1; i < rows.length; i++) {
+        let cells = rows[i].getElementsByTagName("td");
+        let match = false;
+        for (let j = 0; j < cells.length; j++) {
+          if (cells[j].innerText.toLowerCase().includes(input)) {
+            match = true;
+            break;
+          }
+        }
+        rows[i].style.display = match ? "" : "none";
+      }
+    }
+
+    // Attendance Bar Chart
+    const ctx1 = document.getElementById('attendanceChart').getContext('2d');
+    new Chart(ctx1, {
+      type: 'bar',
+      data: {
+        labels: ['Monday','Tuesday','Wednesday','Thursday','Friday'],
+        datasets: [{
+          label: 'Average Attendance (%)',
+          data: [85, 90, 75, 80, 95],
+          backgroundColor: ['#ff6a00','#ee0979','#2193b0','#00c853','#ffd600']
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: true } },
+        scales: { y: { beginAtZero: true, max: 100 } }
+      }
+    });
+
+    // Food Preference Pie Chart
+    const ctx2 = document.getElementById('foodChart').getContext('2d');
+    new Chart(ctx2, {
+      type: 'pie',
+      data: {
+        labels: ['Idli','Dosa','Biryani','Paratha','Noodles'],
+        datasets: [{
+          label: 'Food Preference',
+          data: [25, 20, 30, 15, 10],
+          backgroundColor: ['#ff6a00','#ee0979','#2193b0','#00c853','#ffd600']
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: 'bottom' } }
+      }
+    });
+  </script>
+</body>
+</html>
